@@ -5,19 +5,15 @@ permissions:
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-      - 'release/**'
-  pull_request:
-    branches:
-      - main
-      - 'release/**'
+  workflow_run:
+    workflows: [Builds]
+    types: [completed]
 
 jobs:
   tests:
     name: Xcode ${{ matrix.xcode-version }} / swift-syntax ${{ matrix.swift-syntax-version }} / ${{ matrix.configuration }}
     runs-on: macos-15
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     strategy:
       matrix:
         xcode-version: [
